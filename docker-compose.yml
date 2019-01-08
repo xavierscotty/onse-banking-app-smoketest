@@ -1,8 +1,16 @@
 version: "3"
 services:
+    api-gateway:
+      image: traefik
+      command: --api --web --docker --docker.domain=docker.localhost --docker.exposedbydefault=false --logLevel=INFO
+      ports:
+      - "80:80"     # The HTTP port
+      - "8080:8080" # Dashboard port
+      volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
     message-bus:
       image: 'rabbitmq:3-management'
-      hostname: rabbitmq-host
       ports:
         - 5672:5672
         - 15672:15672
@@ -36,27 +44,53 @@ services:
     customer-service:
       build: ./onse-customer-service
       restart: always
-      ports:
-        - 5001:5000
       volumes:
         - ./onse-customer-service:/app
       environment:
         PORT: 5000
       networks:
         - default
+      labels:
+       - "traefik.enable=false"
+       - "traefik.port=5000"
+       - "traefik.backend=customer-service"
+       - "traefik.frontend.rule=PathPrefix:/customers/"
     # onse-account-service
     account-service:
       build: ./onse-account-service
       restart: always
-      ports:
-        - 5002:5000
       volumes:
         - ./onse-account-service:/app
       environment:
         PORT: 5000
       networks:
         - default
-
+      labels:
+       - "traefik.enable=true"
+       - "traefik.port=5000"
+       - "traefik.backend=account-service"
+       - "traefik.frontend.rule=PathPrefix:/account/"
+    # onse-cashier-service
+    cashier-service:
+      build: ./onse-cashier-service
+      restart: always
+      volumes:
+        - ./onse-cashier-service:/app
+      environment:
+        PORT: 5000
+        RABBITMQ_PORT: 5672
+        RABBITMQ_HOST: message-bus
+        RABBITMQ_QUEUE: transactions
+        RABBITMQ_EXCHANGE: transactions
+      depends_on:
+        - message-bus
+      networks:
+        - default
+      labels:
+       - "traefik.enable=true"
+       - "traefik.port=5000"
+       - "traefik.backend=cashier-service"
+       - "traefik.frontend.rule=PathPrefix:/cashier/"
 
 networks:
   default:
