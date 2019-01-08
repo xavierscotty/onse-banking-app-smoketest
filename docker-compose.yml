@@ -13,7 +13,7 @@ services:
       build: ./onse-transaction-service
       restart: always
       volumes:
-        - .:/app
+        - ./onse-transaction-service:/app
       depends_on:
         - message-bus
         - transaction-service-db
@@ -36,18 +36,22 @@ services:
     customer-service:
       build: ./onse-customer-service
       restart: always
+      ports:
+        - 5001:5000
       volumes:
-        - .:/app
+        - ./onse-customer-service:/app
       environment:
         PORT: 5000
       networks:
         - default
     # onse-account-service
     account-service:
-      build: ./onse-customer-service
+      build: ./onse-account-service
       restart: always
+      ports:
+        - 5002:5000
       volumes:
-        - .:/app
+        - ./onse-account-service:/app
       environment:
         PORT: 5000
       networks:
