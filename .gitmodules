@@ -1,0 +1,9 @@
+[submodule "onse-transaction-service"]
+	path = onse-transaction-service
+	url = git@bitbucket.org-armakuni:armakuni/onse-transaction-service.git
+[submodule "onse-account-service"]
+	path = onse-account-service
+	url = git@bitbucket.org-armakuni:armakuni/onse-account-service.git
+[submodule "onse-customer-service"]
+	path = onse-customer-service
+	url = git@bitbucket.org-armakuni:armakuni/onse-customer-service.git
