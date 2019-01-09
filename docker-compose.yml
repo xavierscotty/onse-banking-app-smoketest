@@ -12,7 +12,7 @@ services:
     message-bus:
       image: 'rabbitmq:3-management'
       ports:
-        - 5672:5672
+        - "5672"
         - 15672:15672
       networks:
         - default
@@ -20,12 +20,15 @@ services:
     transaction-service:
       build: ./onse-transaction-service
       restart: always
+      ports:
+        - "5000"
       volumes:
         - ./onse-transaction-service:/app
       depends_on:
         - message-bus
         - transaction-service-db
       environment:
+        PORT: 5000
         RABBITMQ_PORT: 5672
         RABBITMQ_HOST: message-bus
         ACCOUNT_SERVICE_URL: "todo"
@@ -34,7 +37,7 @@ services:
     transaction-service-db:
       image: postgres:latest
       ports:
-        - 5432:5432
+        - "5432"
       environment:
         POSTGRES_PASSWORD: guest
         POSTGRES_USER: guest
@@ -44,6 +47,8 @@ services:
     customer-service:
       build: ./onse-customer-service
       restart: always
+      ports:
+        - "5000"
       volumes:
         - ./onse-customer-service:/app
       environment:
@@ -59,6 +64,8 @@ services:
     account-service:
       build: ./onse-account-service
       restart: always
+      ports:
+        - "5000"
       volumes:
         - ./onse-account-service:/app
       environment:
@@ -74,6 +81,8 @@ services:
     cashier-service:
       build: ./onse-cashier-service
       restart: always
+      ports:
+        - "5000"
       volumes:
         - ./onse-cashier-service:/app
       environment:
