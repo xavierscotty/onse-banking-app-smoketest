@@ -81,7 +81,7 @@ services:
        - "traefik.enable=true"
        - "traefik.port=5000"
        - "traefik.backend=account-service"
-       - "traefik.frontend.rule=PathPrefix:/account/"
+       - "traefik.frontend.rule=PathPrefix:/accounts/"
     # onse-cashier-service
     cashier-service:
       build: ./onse-cashier-service
