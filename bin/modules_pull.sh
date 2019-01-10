@@ -5,9 +5,7 @@ git submodule add git@bitbucket.org-armakuni:armakuni/onse-account-service.git o
 git submodule add git@bitbucket.org-armakuni:armakuni/onse-customer-service.git onse-customer-service
 git submodule add git@bitbucket.org-armakuni:armakuni/onse-customer-service.git onse-customer-service
 git submodule add git@bitbucket.org-armakuni:armakuni/onse-cashier-service.git onse-cashier-service
+git submodule add git@bitbucket.org-armakuni:armakuni/onse-balance-service.git onse-balance-service
 
 git submodule init
-# git submodule update
 git submodule update --remote --merge
-
-git submodule init
