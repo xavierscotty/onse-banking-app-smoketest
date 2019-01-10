@@ -75,6 +75,11 @@ services:
         - ./onse-account-service:/app
       environment:
         PORT: 5000
+        CUSTOMER_SERVICE_URL: http://customer-service:5000
+        DB_HOST: account-service-db
+        DB_PORT: 5432
+        DB_USERNAME: guest
+        DB_PASSWORD: guest
       networks:
         - default
       labels:
@@ -82,6 +87,16 @@ services:
        - "traefik.port=5000"
        - "traefik.backend=account-service"
        - "traefik.frontend.rule=PathPrefix:/accounts/"
+    account-service-db:
+      image: postgres:latest
+      ports:
+        - "5432"
+      environment:
+        POSTGRES_PASSWORD: guest
+        POSTGRES_USER: guest
+        POSTGRES_DB: account-service
+      networks:
+        - default
     # onse-cashier-service
     cashier-service:
       build: ./onse-cashier-service
