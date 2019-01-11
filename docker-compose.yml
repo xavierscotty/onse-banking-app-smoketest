@@ -121,13 +121,13 @@ services:
        - "traefik.backend=cashier-service"
        - "traefik.frontend.rule=PathPrefix:/cashier/"
     # balance-service
-    balance-app:
+    balance-service-app:
       build:
-        context: .
+        context: ./onse-balance-service/
         dockerfile: Dockerfile-app
       restart: always
       volumes:
-        - .:/app
+        - ./onse-balance-service:/app
       ports:
         - 5000
       depends_on:
