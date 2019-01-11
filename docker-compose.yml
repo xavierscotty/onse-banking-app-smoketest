@@ -124,7 +124,7 @@ services:
     balance-service-app:
       build:
         context: ./onse-balance-service/
-        dockerfile: Dockerfile-app
+        dockerfile: Dockerfile.app
       restart: always
       volumes:
         - ./onse-balance-service:/app
@@ -147,6 +147,24 @@ services:
       image: redis
       ports:
         - "6379"
+    balance-worker:
+      build:
+        context: ./onse-balance-service/
+        dockerfile: Dockerfile.worker
+      restart: always
+      depends_on:
+        - message-bus
+        - balance-store
+      volumes:
+        - ./onse-balance-service:/app
+      environment:
+        REDIS_URL: redis://balance-store:6379
+        BALANCE_NAMESPACE: balance
+        RABBITMQ_PORT: 5672
+        RABBITMQ_HOST: message-bus
+        RABBITMQ_CONSUMER_QUEUE: balance_updates
+      networks:
+        - default
 
 networks:
   default:
