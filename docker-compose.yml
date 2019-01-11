@@ -120,6 +120,33 @@ services:
        - "traefik.port=5000"
        - "traefik.backend=cashier-service"
        - "traefik.frontend.rule=PathPrefix:/cashier/"
+    # balance-service
+    balance-app:
+      build:
+        context: .
+        dockerfile: Dockerfile-app
+      restart: always
+      volumes:
+        - .:/app
+      ports:
+        - 5000
+      depends_on:
+        - balance-store
+      environment:
+        PORT: 5000
+        REDIS_URL: redis://balance-store:6379
+        BALANCE_NAMESPACE: balance
+      labels:
+       - "traefik.enable=true"
+       - "traefik.port=5000"
+       - "traefik.backend=balance-app"
+       - "traefik.frontend.rule=PathPrefix:/balance/"
+      networks:
+        - default
+    balance-store:
+      image: redis
+      ports:
+        - "6379"
 
 networks:
   default:
