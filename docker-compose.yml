@@ -58,13 +58,30 @@ services:
         - ./onse-customer-service:/app
       environment:
         PORT: 5000
+        DB_HOST: customer-service-db
+        DB_PORT: 5432
+        DB_USERNAME: guest
+        DB_PASSWORD: guest
+        DB_NAME: customer-service
+      depends_on:
+          - transaction-service-db
       networks:
         - default
       labels:
-       - "traefik.enable=false"
+       - "traefik.enable=true"
        - "traefik.port=5000"
        - "traefik.backend=customer-service"
        - "traefik.frontend.rule=PathPrefix:/customers/"
+    customer-service-db:
+       image: postgres:latest
+       ports:
+           - "5432"
+       environment:
+           POSTGRES_PASSWORD: guest
+           POSTGRES_USER: guest
+           POSTGRES_DB: customer-service
+       networks:
+           - default
     # onse-account-service
     account-service:
       build: ./onse-account-service
