@@ -26,21 +26,31 @@ def create_account(context, name):
     response = requests.post(f'{URL}/accounts/',
                              json=create_account_request)
 
-    assert response.status_code == 201, response.status_code
+    assert response.status_code == 201, f'{response.status_code} {response.text}'
     body = response.json()
     context.account_number = body['accountNumber']
 
 
 @when('I deposit {amount:d} the account')
 def deposit(context, amount):
-    deposit_request = {'accountNumber': context.account_number,
-                       'amount': amount,
-                       'operation': 'deposit'}
+    deposit_request = dict(accountNumber=context.account_number,
+                           amount=amount,
+                           operation='credit')
 
     response = requests.post(f'{URL}/cashier/create', json=deposit_request)
 
-    assert response.status_code == 202, \
-        f'Expected 202 when creating deposit, got {response.status_code}'
+    assert response.status_code == 202, f'{response.status_code} {response.text}'
+
+
+@when("I withdraw {amount:d} the account")
+def withdraw(context, amount):
+    deposit_request = dict(accountNumber=context.account_number,
+                           amount=amount,
+                           operation='debit')
+
+    response = requests.post(f'{URL}/cashier/create', json=deposit_request)
+
+    assert response.status_code == 202, f'{response.status_code} {response.text}'
 
 
 @then('then balance of the account should be {amount:d}')
