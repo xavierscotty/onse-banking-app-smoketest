@@ -13,19 +13,26 @@ spec:
         backend:
           serviceName: message-bus
           servicePort: management
-      - path: /cashier/
-        backend:
-          serviceName: cashier-service
-          servicePort: http
-      - path: /customers/
-        backend:
-          serviceName: customer-service
-          servicePort: http
-      - path: /accounts/
-        backend:
-          serviceName: account-service
-          servicePort: http
-      - path: /balance/
-        backend:
-          serviceName: balance-service
-          servicePort: http
+  - host: localhost
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: message-bus
+            servicePort: management
+        - path: /cashier/
+          backend:
+            serviceName: cashier-service
+            servicePort: http
+        - path: /customers/
+          backend:
+            serviceName: customer-service
+            servicePort: http
+        - path: /accounts/
+          backend:
+            serviceName: account-service
+            servicePort: http
+        - path: /balance/
+          backend:
+            serviceName: balance-service
+            servicePort: http
