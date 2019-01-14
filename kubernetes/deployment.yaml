@@ -66,11 +66,6 @@ metadata:
   name: cashier-service
   labels:
     app: cashier-service
-  annotations:
-    traefik.backend: cashier-service
-    traefik.enable: "false"
-    traefik.frontend.rule: PathPrefix:/cashier/
-    traefik.port: "5000"
 spec:
   selector:
     matchLabels:
@@ -170,11 +165,6 @@ metadata:
   name: customer-service
   labels:
     app: customer-service
-  annotations:
-    traefik.backend: customer-service
-    traefik.enable: "false"
-    traefik.frontend.rule: PathPrefix:/customers/
-    traefik.port: "5000"
 spec:
   selector:
     matchLabels:
@@ -278,11 +268,6 @@ metadata:
   labels:
     app: account-service
     tier: api
-  annotations:
-    traefik.backend: account-service
-    traefik.enable: "true"
-    traefik.frontend.rule: PathPrefix:/accounts/
-    traefik.port: "5000"
 spec:
   selector:
     matchLabels:
@@ -463,11 +448,6 @@ metadata:
   name: balance-service
   labels:
     app: balance-service
-  annotations:
-    traefik.backend: balance-app
-    traefik.enable: "true"
-    traefik.frontend.rule: PathPrefix:/balance/
-    traefik.port: "5000"
 spec:
   selector:
     matchLabels:
