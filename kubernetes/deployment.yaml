@@ -10,7 +10,7 @@ spec:
   ports:
   - name: message-bus
     port: 5672
-  - name: message-bus-management
+  - name: management
     port: 15672
   selector:
     app: message-bus
@@ -43,7 +43,111 @@ spec:
         - containerPort: 5672
         - containerPort: 15672
 
+# cashier-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cashier-service
+  labels:
+    app: cashier-service
+spec:
+  ports:
+  - name: http
+    port: 5000
+  selector:
+    app: cashier-service
+    tier: api
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cashier-service
+  labels:
+    app: cashier-service
+  annotations:
+    traefik.backend: cashier-service
+    traefik.enable: "false"
+    traefik.frontend.rule: PathPrefix:/cashier/
+    traefik.port: "5000"
+spec:
+  selector:
+    matchLabels:
+      app: cashier-service
+      tier: api
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cashier-service
+        tier: api
+    spec:
+      containers:
+      - name: cashier-service
+        image: aklearning/eng-lab-cashier-service
+        env:
+        - name: PORT
+          value: "5000"
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_HOST
+          value: message-bus
+        - name: RABBITMQ_QUEUE
+          value: transactions
+        - name: RABBITMQ_EXCHANGE_NAME
+          value: transactions
+        ports:
+        - containerPort: 5000
+
 # customer-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service-db
+  labels:
+    app: customer-service
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: customer-service
+    tier: postgresql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service-db
+  labels:
+    app: customer-service
+spec:
+  selector:
+    matchLabels:
+      app: customer-service
+      tier: postgresql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: customer-service
+        tier: postgresql
+    spec:
+      containers:
+      - image: postgres:latest
+        name: postgresql
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: customer-service
+        - name: POSTGRES_PASSWORD
+          value: guest
+        - name: POSTGRES_USER
+          value: guest
 ---
 apiVersion: v1
 kind: Service
@@ -53,7 +157,8 @@ metadata:
     app: customer-service
 spec:
   ports:
-  - port: 5000
+  - name: http
+    port: 5000
   selector:
     app: customer-service
     tier: api
@@ -90,6 +195,16 @@ spec:
         env:
         - name: PORT
           value: "5000"
+        - name: DB_HOST
+          value: customer-service-db
+        - name: DB_NAME
+          value: customer-service
+        - name: DB_PASSWORD
+          value: guest
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USERNAME
+          value: guest
         ports:
         - containerPort: 5000
 
@@ -149,7 +264,8 @@ metadata:
     app: account-service
 spec:
   ports:
-  - port: 5000
+  - name: http
+    port: 5000
   selector:
     app: account-service
     tier: api
@@ -246,20 +362,6 @@ spec:
         - name: POSTGRES_USER
           value: guest
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: transaction-service
-  labels:
-    app: transaction-service
-spec:
-  ports:
-  - port: 5000
-  selector:
-    app: transaction-service
-    tier: api
-  clusterIP: None
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -281,8 +383,6 @@ spec:
       containers:
       - image: aklearning/eng-lab-transaction-service
         name: transaction-service
-        ports:
-        - containerPort: 5000
         env:
         - name: ACCOUNT_SERVICE_URL
           value: http://account-service:5000
@@ -350,7 +450,8 @@ metadata:
     app: balance-service
 spec:
   ports:
-  - port: 5000
+  - name: http
+    port: 5000
   selector:
     app: balance-service
     tier: api
@@ -391,4 +492,38 @@ spec:
           value: "5000"
         - name: REDIS_URL
           value: redis://balance-service-store:6379
-
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance-worker
+  labels:
+    app: balance-service
+spec:
+  selector:
+    matchLabels:
+      app: balance-service
+      tier: worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: balance-service
+        tier: worker
+    spec:
+      containers:
+      - image: aklearning/eng-lab-balance-worker
+        name: balance-service
+        env:
+        - name: BALANCE_NAMESPACE
+          value: balance
+        - name: PORT
+          value: "5000"
+        - name: REDIS_URL
+          value: redis://balance-service-store:6379
+        - name: RABBITMQ_HOST
+          value: message-bus
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_CONSUMER_QUEUE
+          value: balance_updates
