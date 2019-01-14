@@ -6,20 +6,16 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: rabbitmq.localhost
+  - host: rabbit.ons
     http:
       paths:
       - path: /
         backend:
           serviceName: message-bus
           servicePort: management
-  - host: localhost
+  - host: banking.ons
     http:
       paths:
-        - path: /
-          backend:
-            serviceName: message-bus
-            servicePort: management
         - path: /cashier/
           backend:
             serviceName: cashier-service

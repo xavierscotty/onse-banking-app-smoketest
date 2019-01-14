@@ -83,6 +83,7 @@ spec:
       containers:
       - name: cashier-service
         image: aklearning/eng-lab-cashier-service
+        imagePullPolicy: Always
         env:
         - name: PORT
           value: "5000"
@@ -90,8 +91,6 @@ spec:
           value: "5672"
         - name: RABBITMQ_HOST
           value: message-bus
-        - name: RABBITMQ_QUEUE
-          value: transactions
         - name: RABBITMQ_EXCHANGE_NAME
           value: transactions
         ports:
@@ -182,6 +181,7 @@ spec:
       containers:
       - name: customer-service
         image: aklearning/eng-lab-customer-service
+        imagePullPolicy: Always
         env:
         - name: PORT
           value: "5000"
@@ -283,6 +283,7 @@ spec:
       containers:
       - name: account-service
         image: aklearning/eng-lab-account-service
+        imagePullPolicy: Always
         env:
         - name: CUSTOMER_SERVICE_URL
           value: http://customer-service:5000
@@ -368,6 +369,7 @@ spec:
       containers:
       - image: aklearning/eng-lab-transaction-service
         name: transaction-service
+        imagePullPolicy: Always
         env:
         - name: ACCOUNT_SERVICE_URL
           value: http://account-service:5000
@@ -465,6 +467,7 @@ spec:
         name: balance-service
         ports:
         - containerPort: 5000
+        imagePullPolicy: Always
         env:
         - name: BALANCE_NAMESPACE
           value: balance
@@ -494,6 +497,7 @@ spec:
       containers:
       - image: aklearning/eng-lab-balance-worker
         name: balance-service
+        imagePullPolicy: Always
         env:
         - name: BALANCE_NAMESPACE
           value: balance
@@ -505,5 +509,7 @@ spec:
           value: message-bus
         - name: RABBITMQ_PORT
           value: "5672"
+        - name: RABBITMQ_CONSUMER_EXCHANGE
+          value: balance_updates
         - name: RABBITMQ_CONSUMER_QUEUE
           value: balance_updates
