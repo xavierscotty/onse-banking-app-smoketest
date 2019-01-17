@@ -2,4 +2,4 @@ Master:
   ServiceAnnotations:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-west-1:407621752795:certificate/9cfe7619-5a4f-4b9a-8ce6-82521d88117b
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-  ServicePort: 443
+  ServicePort: 8080
