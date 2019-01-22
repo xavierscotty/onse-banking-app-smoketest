@@ -1,15 +1,15 @@
 [submodule "onse-transaction-service"]
 	path = onse-transaction-service
-	url = git@bitbucket.org-armakuni:armakuni/onse-transaction-service.git
+	url = git@bitbucket.org:armakuni/onse-transaction-service.git
 [submodule "onse-account-service"]
 	path = onse-account-service
-	url = git@bitbucket.org-armakuni:armakuni/onse-account-service.git
+	url = git@bitbucket.org:armakuni/onse-account-service.git
 [submodule "onse-customer-service"]
 	path = onse-customer-service
-	url = git@bitbucket.org-armakuni:armakuni/onse-customer-service.git
+	url = git@bitbucket.org:armakuni/onse-customer-service.git
 [submodule "onse-cashier-service"]
 	path = onse-cashier-service
-	url = git@bitbucket.org-armakuni:armakuni/onse-cashier-service.git
+	url = git@bitbucket.org:armakuni/onse-cashier-service.git
 [submodule "onse-balance-service"]
 	path = onse-balance-service
-	url = git@bitbucket.org-armakuni:armakuni/onse-balance-service.git
+	url = git@bitbucket.org:armakuni/onse-balance-service.git
