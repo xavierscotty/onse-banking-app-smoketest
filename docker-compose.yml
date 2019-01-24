@@ -18,12 +18,12 @@ services:
         - default
     # onse-transaction-service
     transaction-service:
-      build: ./onse-transaction-service
+      build: ../onse-transaction-service
       restart: always
       ports:
         - "5000"
       volumes:
-        - ./onse-transaction-service:/app
+        - ../onse-transaction-service:/app
       depends_on:
         - message-bus
         - transaction-service-db
@@ -50,12 +50,12 @@ services:
         - default
     # onse-customer-service
     customer-service:
-      build: ./onse-customer-service
+      build: ../onse-customer-service
       restart: always
       ports:
         - "5000"
       volumes:
-        - ./onse-customer-service:/app
+        - ../onse-customer-service:/app
       environment:
         PORT: 5000
         DB_HOST: customer-service-db
@@ -84,12 +84,12 @@ services:
            - default
     # onse-account-service
     account-service:
-      build: ./onse-account-service
+      build: ../onse-account-service
       restart: always
       ports:
         - "5000"
       volumes:
-        - ./onse-account-service:/app
+        - ../onse-account-service:/app
       environment:
         PORT: 5000
         CUSTOMER_SERVICE_URL: http://customer-service:5000
@@ -116,12 +116,12 @@ services:
         - default
     # onse-cashier-service
     cashier-service:
-      build: ./onse-cashier-service
+      build: ../onse-cashier-service
       restart: always
       ports:
         - "5000"
       volumes:
-        - ./onse-cashier-service:/app
+        - ../onse-cashier-service:/app
       environment:
         PORT: 5000
         RABBITMQ_PORT: 5672
@@ -139,11 +139,11 @@ services:
     # balance-service
     balance-service-app:
       build:
-        context: ./onse-balance-service/
+        context: ../onse-balance-service/
         dockerfile: Dockerfile.app
       restart: always
       volumes:
-        - ./onse-balance-service:/app
+        - ../onse-balance-service:/app
       ports:
         - 5000
       depends_on:
@@ -165,14 +165,14 @@ services:
         - "6379"
     balance-worker:
       build:
-        context: ./onse-balance-service/
+        context: ../onse-balance-service/
         dockerfile: Dockerfile.worker
       restart: always
       depends_on:
         - message-bus
         - balance-store
       volumes:
-        - ./onse-balance-service:/app
+        - ../onse-balance-service:/app
       environment:
         REDIS_URL: redis://balance-store:6379
         BALANCE_NAMESPACE: balance
