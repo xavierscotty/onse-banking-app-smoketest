@@ -1,5 +1,8 @@
-def git_repository = 'https://github.com/ONSdigital/onse-banking-app-smoketest'
-def app_url = 'http://banking-demo.apps.onse-training.co.uk'
+def github_id = 'ONSdigital'
+
+def namespace = github_id.toLowerCase()
+def git_repository = "https://github.com/${github_id}/onse-banking-app-smoketest"
+def app_url = "http://${namespace}-app.apps.onse-training.co.uk"
 
 def label = "build-${UUID.randomUUID().toString()}"
 def build_pod_template = """
@@ -13,7 +16,7 @@ spec:
     tty: true
 """
 
-podTemplate(name: 'smoketest-build', label: label, yaml: build_pod_template) {
+podTemplate(name: "${namespace}-smoketest-build", label: label, yaml: build_pod_template) {
   node(label) {
     git git_repository
 
